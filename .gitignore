@@ -34,6 +34,7 @@ data/
 venv/
 env/
 ENV/
+.venv/
 .env
 
 # IDEs
