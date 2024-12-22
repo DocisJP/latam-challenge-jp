@@ -47,4 +47,4 @@ data/*.json
 
 # Sistema operativo
 .DS_Store
-Thumbs.db
+Thumbs.db.venv/
