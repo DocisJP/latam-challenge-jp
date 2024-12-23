@@ -5,9 +5,7 @@ import sys
 from typing import Any, Callable, Dict, List, Tuple
 from zipfile import BadZipFile
 
-from src.queries.dates import q1_time, q1_memory
-from src.queries.emojis import q2_time, q2_memory
-from src.queries.mentions import q3_time, q3_memory
+from src.interface.tweet_analyzer import TweetAnalyzerImpl
 from src.utils.exceptions import TweetRepositoryError
 
 # Configurar logging
@@ -19,18 +17,22 @@ logger = logging.getLogger(__name__)
 
 QueryFunction = Callable[[str], List[Tuple[Any, Any]]]
 
+def get_analyzer() -> TweetAnalyzerImpl:
+    """Obtiene una instancia del analizador de tweets."""
+    return TweetAnalyzerImpl()
+
 AVAILABLE_QUERIES: Dict[str, Dict[str, QueryFunction]] = {
     'q1': {
-        'time': q1_time,
-        'memory': q1_memory
+        'time': lambda x: get_analyzer().q1_time(x),
+        'memory': lambda x: get_analyzer().q1_memory(x)
     },
     'q2': {
-        'time': q2_time,
-        'memory': q2_memory
+        'time': lambda x: get_analyzer().q2_time(x),
+        'memory': lambda x: get_analyzer().q2_memory(x)
     },
     'q3': {
-        'time': q3_time,
-        'memory': q3_memory
+        'time': lambda x: get_analyzer().q3_time(x),
+        'memory': lambda x: get_analyzer().q3_memory(x)
     }
 }
 
@@ -49,14 +51,14 @@ def measure_execution_time(func: QueryFunction, file_path: str) -> Tuple[List[Tu
         TweetRepositoryError: Si hay errores durante el procesamiento
     """
     try:
-        logger.info(f"Iniciando ejecución de {func.__name__}")
+        logger.info("Iniciando ejecución de %s", func.__name__)
         start_time = time.time()
         result = func(file_path)
         execution_time = time.time() - start_time
-        logger.info(f"Ejecución completada en {execution_time:.2f} segundos")
+        logger.info("Ejecución completada en %s segundos", execution_time)
         return result, execution_time
     except Exception as error:
-        logger.error(f"Error durante la ejecución de {func.__name__}: {error}")
+        logger.error("Error durante la ejecución: %s", error)
         raise
 
 def display_results(results: List[Tuple[Any, Any]], execution_time: float, query: str) -> None:
@@ -90,7 +92,7 @@ def display_results(results: List[Tuple[Any, Any]], execution_time: float, query
                 print(f"{key}: {value}")
                 
     except Exception as error:
-        logger.error(f"Error mostrando resultados: {error}")
+        logger.error("Error mostrando resultados: %s", error)
         print("Error al mostrar los resultados. Consulte los logs para más detalles.")
 
 def execute_query(query: str, optimization: str, file_path: str) -> None:
@@ -113,26 +115,26 @@ def execute_query(query: str, optimization: str, file_path: str) -> None:
     if optimization not in AVAILABLE_QUERIES[query]:
         raise ValueError(f"Optimización {optimization} no disponible para {query}")
     
-    logger.info(f"Ejecutando {query} (Optimizado para {optimization})")
+    logger.info("Ejecutando %s (Optimizado para %s)", query, optimization)
     query_func = AVAILABLE_QUERIES[query][optimization]
     
     try:
         results, exec_time = measure_execution_time(query_func, file_path)
         display_results(results, exec_time, query)
     except FileNotFoundError:
-        logger.error(f"No se encontró el archivo: {file_path}")
+        logger.error("No se encontró el archivo: %s", file_path)
         print(f"\nError: No se encontró el archivo {file_path}")
         sys.exit(1)
     except BadZipFile:
-        logger.error(f"El archivo está corrupto o no es un ZIP válido: {file_path}")
+        logger.error("El archivo está corrupto o no es un ZIP válido: %s", file_path)
         print(f"\nError: El archivo {file_path} está corrupto o no es un ZIP válido")
         sys.exit(1)
     except TweetRepositoryError as error:
-        logger.error(f"Error procesando tweets: {error}")
+        logger.error("Error procesando tweets: %s", error)
         print(f"\nError: {error}")
         sys.exit(1)
     except Exception as error:
-        logger.error(f"Error inesperado: {error}")
+        logger.error("Error inesperado: %s", error)
         print("\nError inesperado. Consulte los logs para más detalles.")
         sys.exit(1)
 
@@ -165,7 +167,7 @@ def main() -> None:
         print("\nEjecución interrumpida por el usuario")
         sys.exit(0)
     except Exception as error:
-        logger.error(f"Error en la ejecución principal: {error}")
+        logger.error("Error en la ejecución principal: %s", error)
         print(f"\nError: {error}")
         sys.exit(1)
 

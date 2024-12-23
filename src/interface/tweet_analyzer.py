@@ -2,6 +2,10 @@ from abc import ABC, abstractmethod
 from typing import List, Tuple
 from datetime import datetime
 
+from src.queries.dates import q1_time, q1_memory
+from src.queries.emojis import q2_time, q2_memory
+from src.queries.mentions import q3_time, q3_memory
+
 class TweetAnalyzer(ABC):
     """Clase base abstracta que define la interfaz para operaciones de análisis de tweets."""
     
@@ -55,3 +59,24 @@ class TweetAnalyzer(ABC):
     def q3_memory(self, file_path: str) -> List[Tuple[str, int]]:
         """Versión optimizada en memoria de q3_time."""
         pass
+
+class TweetAnalyzerImpl(TweetAnalyzer):
+    """Implementación concreta del analizador de tweets."""
+    
+    def q1_time(self, file_path: str) -> List[Tuple[datetime.date, str]]:
+        return q1_time(file_path)
+        
+    def q1_memory(self, file_path: str) -> List[Tuple[datetime.date, str]]:
+        return q1_memory(file_path)
+        
+    def q2_time(self, file_path: str) -> List[Tuple[str, int]]:
+        return q2_time(file_path)
+        
+    def q2_memory(self, file_path: str) -> List[Tuple[str, int]]:
+        return q2_memory(file_path)
+        
+    def q3_time(self, file_path: str) -> List[Tuple[str, int]]:
+        return q3_time(file_path)
+        
+    def q3_memory(self, file_path: str) -> List[Tuple[str, int]]:
+        return q3_memory(file_path)
