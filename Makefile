@@ -1,4 +1,4 @@
-.PHONY: all help q1-time q1-memory q2-time q2-memory q3-time q3-memory q1-time-detailed q1-memory-detailed q2-time-detailed q2-memory-detailed clean
+.PHONY: all help q1-time q1-memory q2-time q2-memory q3-time q3-memory q1-time-detailed q1-memory-detailed q2-time-detailed q2-memory-detailed q3-time-detailed q3-memory-detailed clean
 
 help:
 	@echo "Available commands:"
@@ -12,6 +12,10 @@ help:
 	@echo "  make q2-memory        - Run query 2 with memory optimization (simple output)"
 	@echo "  make q2-time-detailed - Run query 2 with detailed time profiling"
 	@echo "  make q2-memory-detailed - Run query 2 with detailed memory profiling"
+	@echo "  make q3-time          - Run query 3 with time optimization (simple output)"
+	@echo "  make q3-memory        - Run query 3 with memory optimization (simple output)"
+	@echo "  make q3-time-detailed - Run query 3 with detailed time profiling"
+	@echo "  make q3-memory-detailed - Run query 3 with detailed memory profiling"
 	@echo "  make clean            - Clean up temporary files"
 
 # Query 1 - Simple Output
@@ -58,6 +62,15 @@ q3-time:
 q3-memory:
 	@echo "Running Query 3 (Memory Optimization)..."
 	PYTHONPATH=. python tools/run.py --query q3 --optimization memory
+
+# Query 3 - Detailed Profiling
+q3-time-detailed:
+	@echo "Running Query 3 (Detailed Time Profiling)..."
+	PYTHONPATH=. python -m cProfile -s cumtime tools/run.py --query q3 --optimization time
+
+q3-memory-detailed:
+	@echo "Running Query 3 (Detailed Memory Profiling)..."
+	PYTHONPATH=. python -m memory_profiler tools/run.py --query q3 --optimization memory
 
 all: clean q1-time q1-memory q2-time q2-memory q3-time q3-memory
 
