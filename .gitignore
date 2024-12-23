@@ -34,6 +34,7 @@ data/
 venv/
 env/
 ENV/
+.venv/
 .env
 
 # IDEs
@@ -47,4 +48,4 @@ data/*.json
 
 # Sistema operativo
 .DS_Store
-Thumbs.db
+Thumbs.db.venv/
