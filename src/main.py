@@ -7,8 +7,8 @@ from zipfile import BadZipFile
 
 from src.queries.dates import q1_time, q1_memory
 from src.queries.emojis import q2_time, q2_memory
+from src.queries.mentions import q3_time, q3_memory
 from src.utils.exceptions import TweetRepositoryError
-# from src.queries.mentions import q3_time, q3_memory
 
 # Configurar logging
 logging.basicConfig(
@@ -25,13 +25,13 @@ AVAILABLE_QUERIES: Dict[str, Dict[str, QueryFunction]] = {
         'memory': q1_memory
     },
     'q2': {
-         'time': q2_time,
-         'memory': q2_memory
+        'time': q2_time,
+        'memory': q2_memory
     },
-    # 'q3': {
-    #     'time': q3_time,
-    #     'memory': q3_memory
-    # }
+    'q3': {
+        'time': q3_time,
+        'memory': q3_memory
+    }
 }
 
 def measure_execution_time(func: QueryFunction, file_path: str) -> Tuple[List[Tuple[Any, Any]], float]:
@@ -81,9 +81,14 @@ def display_results(results: List[Tuple[Any, Any]], execution_time: float, query
             print("Top 10 emojis más usados:")
             for emoji, count in results:
                 print(f"{emoji}: {count} veces")
+        elif query == 'q3':
+            print("Top 10 usuarios más mencionados:")
+            for username, count in results:
+                print(f"@{username}: {count} menciones")
         else:
             for key, value in results:
                 print(f"{key}: {value}")
+                
     except Exception as error:
         logger.error(f"Error mostrando resultados: {error}")
         print("Error al mostrar los resultados. Consulte los logs para más detalles.")
