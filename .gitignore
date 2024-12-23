@@ -49,3 +49,5 @@ data/*.json
 # Sistema operativo
 .DS_Store
 Thumbs.db.venv/
+*.stats
+*.prof
